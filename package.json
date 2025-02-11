@@ -1,0 +1,19 @@
+{
+  "name": "hexagonal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind:build": "tailwindcss -i ./web/css/style.css -o ./static/css/style.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "daisyui": "^4.12.13"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

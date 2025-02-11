@@ -1,0 +1,29 @@
+services:
+  server:
+    image: edlingaona/<your-image-name>:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./migration/main.db:/app/migration/main.db
+      - ./.env:/app/.env
+      - ./public:/app/public
+    env_file: ".env"
+    environment:
+      - GO_PORT=${GO_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+    command: ["/bin/bash", "-c", "./main"]
+    network_mode: host
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - server
+    network_mode: host

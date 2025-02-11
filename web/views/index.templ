@@ -1,0 +1,129 @@
+package views
+
+import "github.com/edlingao/hexago/web/components/templates"
+import "github.com/edlingao/hexago/internal/calculator/core"
+import "strconv"
+
+type IndexVM struct {
+  Error error
+  Result IndexResult
+  History []core.Calculation
+}
+
+type IndexResult struct {
+  Result int
+  Present bool
+}
+
+templ Index(vm IndexVM) {
+  @templates.Index(templates.IndexVM{
+      Title: "Calculadora",
+      Error: vm.Error,
+    }) {
+  <body class="bg-gray-100 min-h-screen p-8">
+    <div x-data="{
+        num1: '',
+        num2: '',
+        operation: '0',
+        history: []
+    }" class="max-w-md mx-auto">
+        <!-- Calculator Card -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Calculator</h2>
+            
+            <!-- Input Fields -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">First Number</label>
+                    <input 
+                        type="number" 
+                        name="num1"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter first number"
+                    >
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Operation</label>
+                    <select 
+                        name="operation"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="0">Addition (+)</option>
+                        <option value="1">Subtraction (-)</option>
+                        <option value="2">Multiplication (×)</option>
+                        <option value="3">Division (÷)</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Second Number</label>
+                    <input 
+                        type="number" 
+                        name="num2"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter second number"
+                    >
+                </div>
+            </div>
+
+            <!-- Result -->
+            if vm.Result.Present {
+              <div class="mt-6" id="result">
+                <p class="text-2xl font-bold text-gray-800">Result: {strconv.Itoa(vm.Result.Result)}</p>
+              </div>
+            }
+            <!-- Calculate Button -->
+            <button
+                hx-post="/calculate"
+                hx-select="#result"
+                hx-swap="none"
+                hx-include="[name=num1],[name=num2],[name=operation]"
+                class="w-full mt-6 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+                Calculate
+            </button>
+        </div>
+        
+        <!-- History Card -->
+        <div
+          hx-trigger="calc:history from:body"
+          hx-get="/history"
+          hx-select="#history"
+          hx-target="#history"
+          class="bg-white rounded-lg shadow-lg p-6"
+        >
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">History</h2>
+            
+            <!-- History List -->
+            <div
+              id="history"
+              class="space-y-2"
+            >
+                <div class="p-3 bg-gray-50 rounded-md flex flex-col gap-4">
+                  for index, history := range vm.History {
+                    <div id={"calculation_" + strconv.Itoa(index)} class="flex justify-between">
+                      <p class="text-gray-700">
+                          <span>{strconv.Itoa(history.Number1)}</span>
+                          <span>
+                          {history.CalculationSymbol}
+                          </span>
+                          <span>{strconv.Itoa(history.Number2)}</span>
+                          <span> = </span>
+                          <span class="font-bold">{strconv.Itoa(history.Result)}</span>
+                      </p>
+                      <button
+                        class="btn btn-error btn-sm text-white"
+                        hx-swap="delete"
+                        hx-target={"#calculation_" + strconv.Itoa(index)}
+                        hx-delete={"api/v1/calculator/delete/" + history.ID}
+                      >Delete</button>
+                    </div>
+                  }
+                </div>
+            </div>
+        </div>
+    </div>
+  </body>
+  }
+}

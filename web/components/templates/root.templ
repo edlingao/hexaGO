@@ -1,0 +1,33 @@
+package templates
+
+type IndexVM struct {
+  Title string
+  Error error
+}
+
+templ Index(vm IndexVM) {
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="/static/css/style.css">
+      <link rel="icon" href="/static/favicon.svg" type="image/svg">
+      <title>{vm.Title}</title>
+    </head>
+    <body>
+
+      if vm.Error != nil {
+        <div role="alert" class="alert alert-error">
+          <h1>Error: {vm.Error.Error()}</h1>
+        </div>
+      }
+
+      {children...}
+
+      <!-- Scripts -->
+      <script defer  src="/static/js/main.js"></script>
+      <script defer  src="/static/js/htmx.js"></script>
+      <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    </body>
+  </html>
+}

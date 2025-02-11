@@ -1,0 +1,5 @@
+# JS crap
+node_modules/
+node_modules/*
+
+db/main.db
