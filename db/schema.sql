@@ -7,3 +7,20 @@ CREATE TABLE IF NOT EXISTS calculations (
     num2 INTEGER NOT NULL
 );
 
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER NOT NULL,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER NOT NULL,
+    token TEXT NOT NULL UNIQUE,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    PRIMARY KEY (id)
+);

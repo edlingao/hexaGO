@@ -26,5 +26,7 @@ func main() {
 
 	config.AddCalculatorAPI()
   config.AddCalculatorWeb()
+  config.AddUserAPI()
+  config.AddUserWeb()
   config.Start()
 }

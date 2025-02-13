@@ -8,3 +8,14 @@
   box-sizing: border-box;
 }
 
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+.floating { animation: float 6s ease-in-out infinite; }
+
+.floating-delay-1 { animation-delay: 1s; }
+
+.floating-delay-2 { animation-delay: 2s; }
