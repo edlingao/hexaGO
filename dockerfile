@@ -44,6 +44,11 @@ RUN npm install -g pnpm;
 RUN pnpm install;
 
 RUN pnpm tailwind:build;
+
+RUN go install github.com/a-h/templ/cmd/templ@latest;
+RUN templ generate;
+
 RUN go mod download;
 RUN go mod tidy;
+
 RUN go build -o /app/main

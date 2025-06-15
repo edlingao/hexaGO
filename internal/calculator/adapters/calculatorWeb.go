@@ -33,7 +33,7 @@ func NewCalculatorWebpage(
 
 	calculatorWebPageService.http.GET("/", calculatorWebPageService.Home)
 	calculatorWebPageService.http.POST("/calculate", calculatorWebPageService.Calculate)
-  calculatorWebPageService.http.GET("/history", calculatorWebPageService.History)
+	calculatorWebPageService.http.GET("/history", calculatorWebPageService.History)
 
 	return calculatorWebPageService
 }

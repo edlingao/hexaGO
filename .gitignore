@@ -3,3 +3,12 @@ node_modules/
 node_modules/*
 
 db/main.db
+
+tmp/
+
+# Generated Go templ files
+web/**/*_templ.go
+
+
+# Tailwind CSS
+static/css/tailwind.css

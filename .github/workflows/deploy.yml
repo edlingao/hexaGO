@@ -33,7 +33,7 @@ jobs:
           "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}"
           "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/exercise:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/<DOCKER_PROJECT>:latest
 
   deploy:
     runs-on: ubuntu-latest

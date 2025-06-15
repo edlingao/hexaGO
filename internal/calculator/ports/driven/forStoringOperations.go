@@ -5,5 +5,5 @@ type StoringOperations[T any] interface {
 	Insert(item T, sql string) error
 	Get(id, table string) (T, error)
 	GetAll(table string) []T
-  Delete(id, table string) error
+	Delete(id, table string) error
 }

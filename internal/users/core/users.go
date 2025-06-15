@@ -63,8 +63,8 @@ func (us *UserService) Get(id string) (User, error) {
 	return us.DBService.Get(id, "users")
 }
 
-func (us *UserService) GetByUsername(username string) ( User, error ) {
-  return us.DBService.GetByField("username", username, "users")
+func (us *UserService) GetByUsername(username string) (User, error) {
+	return us.DBService.GetByField("username", username, "users")
 }
 
 func (us *UserService) EncryptPassword(password string) string {

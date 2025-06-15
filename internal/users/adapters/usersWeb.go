@@ -11,88 +11,85 @@ import (
 )
 
 type UsersWebService struct {
-  URL         string
-  http        *echo.Group
-  sessionService authCore.SessionService
-  usersService core.UserService
-  dbService   driven.StoringUsers[core.User]
+	URL            string
+	http           *echo.Group
+	sessionService authCore.SessionService
+	usersService   core.UserService
+	dbService      driven.StoringUsers[core.User]
 }
 
 func NewUsersWebService(
-  url string,
-  httpService *echo.Group,
-  sessionService authCore.SessionService,
-  dbService driven.StoringUsers[core.User],
-  usersService core.UserService,
+	url string,
+	httpService *echo.Group,
+	sessionService authCore.SessionService,
+	dbService driven.StoringUsers[core.User],
+	usersService core.UserService,
 ) *UsersWebService {
 
-  usersWebService := &UsersWebService{
-    URL:         url,
-    http:        httpService,
-    sessionService: sessionService,
-    dbService:   dbService,
-    usersService: usersService,
-  }
+	usersWebService := &UsersWebService{
+		URL:            url,
+		http:           httpService,
+		sessionService: sessionService,
+		dbService:      dbService,
+		usersService:   usersService,
+	}
 
-  usersWebService.http.GET("/login", usersWebService.Login)
-  usersWebService.http.GET("/register", usersWebService.SignUp)
+	usersWebService.http.GET("/login", usersWebService.Login)
+	usersWebService.http.GET("/register", usersWebService.SignUp)
 
-  // Protected routes
-  protectedAPI := usersWebService.http.Group("", sessionService.APIAuth)
-  protectedAPI.GET("/all", usersWebService.GetAllUsers)
+	// Protected routes
+	protectedAPI := usersWebService.http.Group("", sessionService.APIAuth)
+	protectedAPI.GET("/all", usersWebService.GetAllUsers)
 
-  protectedWeb := usersWebService.http.Group("", sessionService.WebAuth)
-  protectedWeb.GET("/home", usersWebService.Home)
+	protectedWeb := usersWebService.http.Group("", sessionService.WebAuth)
+	protectedWeb.GET("/home", usersWebService.Home)
 
-  return usersWebService
+	return usersWebService
 }
 
 func (uws *UsersWebService) GetAllUsers(c echo.Context) error {
-  return nil
+	return nil
 }
 
 func (uws *UsersWebService) Login(c echo.Context) error {
-  return lib.Render(
-    c,
-    auth.SignIn(auth.SignInVM{}),
-    200,
-  )
+	return lib.Render(
+		c,
+		auth.SignIn(auth.SignInVM{}),
+		200,
+	)
 }
 
 func (uws *UsersWebService) LoginEndpoint(c echo.Context) error {
-  username := c.FormValue("username")
-  password := c.FormValue("password")
+	username := c.FormValue("username")
+	password := c.FormValue("password")
 
-  _, err := uws.usersService.SignIn(username, password)
+	_, err := uws.usersService.SignIn(username, password)
 
-  if err != nil {
-    return lib.Render(
-      c,
-      auth.SignIn(auth.SignInVM{
-        Error: err,
-      }),
-      400,
-    )
-  }
+	if err != nil {
+		return lib.Render(
+			c,
+			auth.SignIn(auth.SignInVM{
+				Error: err,
+			}),
+			400,
+		)
+	}
 
-  return nil
+	return nil
 }
 
 func (uws *UsersWebService) SignUp(c echo.Context) error {
-  return lib.Render(
-    c,
-    auth.Register(auth.RegisterVM{}),
-    200,
-  )
+	return lib.Render(
+		c,
+		auth.Register(auth.RegisterVM{}),
+		200,
+	)
 }
 
 func (uws *UsersWebService) Home(c echo.Context) error {
-  return lib.Render(
-    c,
-    users.Home(users.HomeVM{}),
-    200,
-  )
+	return lib.Render(
+		c,
+		users.Home(users.HomeVM{}),
+		200,
+	)
 }
-
-
-

@@ -6,10 +6,9 @@ import (
 )
 
 type UserService interface {
-  NewUserService (db driven.StoringUsers[core.User]) *UserService
-  Register(user core.User) error
-  Get(id string) (core.User, error)
-  EncryptPassword(password string) string
-  ValidatePassword(hash string, password string) bool
+	NewUserService(db driven.StoringUsers[core.User]) *UserService
+	Register(user core.User) error
+	Get(id string) (core.User, error)
+	EncryptPassword(password string) string
+	ValidatePassword(hash string, password string) bool
 }
-
