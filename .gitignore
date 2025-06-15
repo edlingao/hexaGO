@@ -9,7 +9,7 @@ tmp/
 web/**/*_templ.go
 
 # Tailwind CSS
-static/css/tailwind.css
+static/css/style.css
 
 # Environment variables
 .env
