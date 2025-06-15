@@ -40,10 +40,7 @@ func (c Calculator) saveCalculation(result, num1, num2, operation int) (Calculat
 		Number2:           num2,
 	}
 
-	error := c.DBService.Insert(calculation, `
-    INSERT INTO calculations (result, symbol, num1, num2)
-    VALUES (:result, :symbol, :num1, :num2)
-  `)
+	error := c.DBService.Insert(calculation)
 
 	if error != nil {
 		log.Fatal(error)
@@ -105,4 +102,8 @@ func (c Calculator) Divide(num1, num2 int) int {
 	result := num1 / num2
 	c.saveCalculation(result, num1, num2, DIVISION)
 	return result
+}
+
+func (c Calculator) GetAllCalculations() []Calculation {
+	return c.DBService.GetAll("calculations")
 }

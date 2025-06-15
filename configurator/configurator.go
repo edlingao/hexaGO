@@ -40,7 +40,7 @@ func New(
 }
 
 func (c *Configurator) AddCalculatorAPI() *Configurator {
-	dbService := calculatorAdapter.NewDB[calculatorCore.Calculation]()
+	dbService := calculatorAdapter.NewCalculatorDB[calculatorCore.Calculation]()
 	calcService := calculatorCore.NewCalculator(dbService)
 	calculatorHttpService := c.v1.Group("/calculator")
 
@@ -57,7 +57,7 @@ func (c *Configurator) AddCalculatorAPI() *Configurator {
 }
 
 func (c *Configurator) AddCalculatorWeb() *Configurator {
-	dbService := calculatorAdapter.NewDB[calculatorCore.Calculation]()
+	dbService := calculatorAdapter.NewCalculatorDB[calculatorCore.Calculation]()
 	calcService := calculatorCore.NewCalculator(dbService)
 	calculatorWebpageService := calculatorAdapter.NewCalculatorWebpage(
 		"/",
@@ -72,7 +72,7 @@ func (c *Configurator) AddCalculatorWeb() *Configurator {
 
 func (c *Configurator) AddUserAPI() *Configurator {
 	dbService := usersAdapter.NewDB[usersCore.User]()
-	sessionDBService := usersAdapter.NewDB[auth.Session]()
+	sessionDBService := usersAdapter.NewSessionStore[auth.Session]()
 
 	userService := usersCore.NewUserService(dbService)
 	usersHttpService := c.v1.Group("/users")
@@ -95,7 +95,10 @@ func (c *Configurator) AddUserAPI() *Configurator {
 
 func (c *Configurator) AddUserWeb() *Configurator {
 	dbService := usersAdapter.NewDB[usersCore.User]()
-	sessionDBService := usersAdapter.NewDB[auth.Session]()
+	sessionDBService := usersAdapter.NewSessionStore[auth.Session]()
+	calculatorService := calculatorCore.NewCalculator(
+		calculatorAdapter.NewCalculatorDB[calculatorCore.Calculation](),
+	)
 
 	userService := usersCore.NewUserService(dbService)
 	usersHttpService := c.root
@@ -110,6 +113,7 @@ func (c *Configurator) AddUserWeb() *Configurator {
 		sessionService,
 		dbService,
 		userService,
+		calculatorService,
 	)
 
 	c.UserWebPage = *usersWebPage

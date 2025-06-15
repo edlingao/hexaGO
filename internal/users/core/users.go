@@ -50,8 +50,7 @@ func (us *UserService) Register(username, password string) error {
 		Password: us.EncryptPassword(password),
 	}
 
-	query := `INSERT INTO users (username, password) VALUES (:username, :password) RETURNING id`
-	err := us.DBService.Insert(user, query)
+	err := us.DBService.Insert(user)
 	return err
 }
 
@@ -77,3 +76,4 @@ func (us *UserService) EncryptPassword(password string) string {
 func (us *UserService) ValidatePassword(hash string, password string) bool {
 	return us.EncryptPassword(password) == hash
 }
+

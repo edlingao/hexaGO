@@ -54,7 +54,7 @@ func (ch *CalculatorHandler) GetCalculation(c echo.Context) error {
 	calculation, err := ch.DBService.Get(id, "calculations")
 
 	if err != nil {
-		return c.JSON(400, driving.Response[interface{}]{
+		return c.JSON(400, driving.Response[any]{
 			Status:  400,
 			Message: err.Error(),
 			Data:    nil,
@@ -74,14 +74,14 @@ func (ch *CalculatorHandler) DeleteCalculation(c echo.Context) error {
 	err := ch.DBService.Delete(id, "calculations")
 
 	if err != nil {
-		return c.JSON(400, driving.Response[interface{}]{
+		return c.JSON(400, driving.Response[any]{
 			Status:  400,
 			Message: err.Error(),
 			Data:    nil,
 		})
 	}
 
-	return c.JSON(200, driving.Response[interface{}]{
+	return c.JSON(200, driving.Response[any]{
 		Status:  200,
 		Message: "Success",
 		Data:    nil,
@@ -94,7 +94,7 @@ func (ch *CalculatorHandler) Calculate(c echo.Context) error {
 	operator, err := strconv.Atoi(c.FormValue("operator"))
 
 	if operator < 0 || operator > 3 {
-		return c.JSON(400, driving.Response[interface{}]{
+		return c.JSON(400, driving.Response[any]{
 			Status:  400,
 			Message: "Invalid operator",
 			Data:    nil,
@@ -102,7 +102,7 @@ func (ch *CalculatorHandler) Calculate(c echo.Context) error {
 	}
 
 	if err != nil {
-		return c.JSON(400, driving.Response[interface{}]{
+		return c.JSON(400, driving.Response[any]{
 			Status:  400,
 			Message: err.Error(),
 			Data:    nil,
