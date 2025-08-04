@@ -7,10 +7,9 @@ import (
 	"time"
 
 	authCore "github.com/edlingao/go-auth/auth/core"
-	calculatorCore "github.com/edlingao/hexago/internal/calculator/core"
-	"github.com/edlingao/hexago/internal/users/core"
-	"github.com/edlingao/hexago/internal/users/ports/driven"
-	"github.com/edlingao/hexago/lib"
+	"github.com/edlingao/hexago/common/delivery/web"
+	calculatorPorts "github.com/edlingao/hexago/internal/calculator/ports"
+	"github.com/edlingao/hexago/internal/users/ports"
 	"github.com/edlingao/hexago/web/views/auth"
 	"github.com/edlingao/hexago/web/views/users"
 	"github.com/labstack/echo/v4"
@@ -18,20 +17,20 @@ import (
 
 type UsersWebService struct {
 	URL               string
-	CalculatorService *calculatorCore.Calculator
+	CalculatorService *calculatorPorts.Calculator
 	http              *echo.Group
 	sessionService    authCore.SessionService
-	usersService      core.UserService
-	dbService         driven.StoringUsers[core.User]
+	usersService      ports.UserServiceMethods
+	dbService         ports.StoringUsers
 }
 
 func NewUsersWebService(
 	url string,
 	httpService *echo.Group,
 	sessionService authCore.SessionService,
-	dbService driven.StoringUsers[core.User],
-	usersService core.UserService,
-	calculatorService *calculatorCore.Calculator,
+	dbService ports.StoringUsers,
+	usersService ports.UserServiceMethods,
+	calculatorService *calculatorPorts.Calculator,
 ) *UsersWebService {
 
 	usersWebService := &UsersWebService{
@@ -63,7 +62,7 @@ func (uws *UsersWebService) GetAllUsers(c echo.Context) error {
 }
 
 func (uws *UsersWebService) Login(c echo.Context) error {
-	return lib.Render(
+	return web.Render(
 		c,
 		auth.SignIn(auth.SignInVM{}),
 		200,
@@ -71,7 +70,7 @@ func (uws *UsersWebService) Login(c echo.Context) error {
 }
 
 func (uws *UsersWebService) SignUp(c echo.Context) error {
-	return lib.Render(
+	return web.Render(
 		c,
 		auth.Register(auth.RegisterVM{}),
 		200,
@@ -85,7 +84,7 @@ func (uws *UsersWebService) LoginEndpoint(c echo.Context) error {
 	user, err := uws.usersService.SignIn(username, password)
 
 	if err != nil {
-		return lib.Render(
+		return web.Render(
 			c,
 			auth.SignIn(auth.SignInVM{
 				Error: err,
@@ -97,7 +96,7 @@ func (uws *UsersWebService) LoginEndpoint(c echo.Context) error {
 	token, err := uws.sessionService.Create(user.ID, user.Username, os.Getenv("JWT_SECRET"))
 
 	if err != nil {
-		return lib.Render(
+		return web.Render(
 			c,
 			auth.SignIn(auth.SignInVM{
 				Error: err,
@@ -109,7 +108,7 @@ func (uws *UsersWebService) LoginEndpoint(c echo.Context) error {
 	c.SetCookie(cookie)
 	c.Response().Header().Set("HX-Location", "/home")
 
-	return lib.Render(
+	return web.Render(
 		c,
 		auth.SignIn(auth.SignInVM{}),
 		200,
@@ -120,7 +119,7 @@ func (uws *UsersWebService) SignUpEndpoint(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 	if username == "" || password == "" {
-		return lib.Render(
+		return web.Render(
 			c,
 			auth.SignIn(auth.SignInVM{
 				Error: errors.New("Username and password are required"),
@@ -131,7 +130,7 @@ func (uws *UsersWebService) SignUpEndpoint(c echo.Context) error {
 
 	err := uws.usersService.Register(username, password)
 	if err != nil {
-		return lib.Render(
+		return web.Render(
 			c,
 			auth.SignIn(auth.SignInVM{
 				Error: err,
@@ -142,7 +141,7 @@ func (uws *UsersWebService) SignUpEndpoint(c echo.Context) error {
 
 	user, err := uws.usersService.GetByUsername(username)
 	if err != nil {
-		return lib.Render(
+		return web.Render(
 			c,
 			auth.SignIn(auth.SignInVM{
 				Error: err,
@@ -153,7 +152,7 @@ func (uws *UsersWebService) SignUpEndpoint(c echo.Context) error {
 
 	token, err := uws.sessionService.Create(user.ID, user.Username, os.Getenv("JWT_SECRET"))
 	if err != nil {
-		return lib.Render(
+		return web.Render(
 			c,
 			auth.SignIn(auth.SignInVM{
 				Error: err,
@@ -167,7 +166,7 @@ func (uws *UsersWebService) SignUpEndpoint(c echo.Context) error {
 
 	c.Response().Header().Set("HX-Location", "/home")
 
-	return lib.Render(
+	return web.Render(
 		c,
 		auth.SignIn(auth.SignInVM{}),
 		200,
@@ -178,7 +177,7 @@ func (uws *UsersWebService) SignUpEndpoint(c echo.Context) error {
 func (uws *UsersWebService) Home(c echo.Context) error {
 	history := uws.CalculatorService.GetAllCalculations()
 
-	return lib.Render(
+	return web.Render(
 		c,
 		users.Home(users.HomeVM{
 			History: history,

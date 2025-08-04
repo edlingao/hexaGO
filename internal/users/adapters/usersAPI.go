@@ -6,16 +6,15 @@ import (
 
 	auth "github.com/edlingao/go-auth/auth/core"
 	"github.com/edlingao/hexago/internal/users/core"
-	"github.com/edlingao/hexago/internal/users/ports/driven"
-	"github.com/edlingao/hexago/internal/users/ports/driving"
+	"github.com/edlingao/hexago/internal/users/ports"
 	"github.com/labstack/echo/v4"
 )
 
 type UsersAPIService struct {
-	dbService      driven.StoringUsers[core.User]
+	dbService      ports.StoringUsers
 	httpService    *echo.Group
 	sessionService auth.SessionService
-	usersService   core.UserService
+	usersService   ports.UserServiceMethods
 	secret         string
 }
 
@@ -25,10 +24,10 @@ type SignInResponse struct {
 }
 
 func NewUsersAPIService(
-	dbService driven.StoringUsers[core.User],
+	dbService ports.StoringUsers,
 	httpService *echo.Group,
 	sessionService auth.SessionService,
-	usersService core.UserService,
+	usersService ports.UserServiceMethods,
 ) *UsersAPIService {
 
 	secret := os.Getenv("JWT_SECRET")
@@ -54,7 +53,7 @@ func NewUsersAPIService(
 func (uas *UsersAPIService) GetAllUsers(c echo.Context) error {
 	users := uas.dbService.GetAll("users")
 
-	return c.JSON(200, driving.Response[[]core.User]{
+	return c.JSON(200, ports.Response[[]core.User]{
 		Status:  200,
 		Message: "Success",
 		Data:    users,
@@ -66,7 +65,7 @@ func (uas *UsersAPIService) SignIn(c echo.Context) error {
 	password := c.FormValue("password")
 
 	if username == "" || password == "" {
-		return c.JSON(400, driving.Response[interface{}]{
+		return c.JSON(400, ports.Response[any]{
 			Status:  400,
 			Message: "Username and password are required",
 		})
@@ -75,7 +74,7 @@ func (uas *UsersAPIService) SignIn(c echo.Context) error {
 	user, err := uas.usersService.SignIn(username, password)
 
 	if err != nil {
-		return c.JSON(500, driving.Response[interface{}]{
+		return c.JSON(500, ports.Response[any]{
 			Status:  500,
 			Message: err.Error(),
 		})
@@ -85,13 +84,13 @@ func (uas *UsersAPIService) SignIn(c echo.Context) error {
 
 	if err != nil {
 		log.Println(user.ID, user.Username, uas.secret, err)
-		return c.JSON(500, driving.Response[interface{}]{
+		return c.JSON(500, ports.Response[any]{
 			Status:  500,
 			Message: err.Error(),
 		})
 	}
 
-	return c.JSON(200, driving.Response[SignInResponse]{
+	return c.JSON(200, ports.Response[SignInResponse]{
 		Status:  200,
 		Message: "User signed in",
 		Data: SignInResponse{
@@ -107,7 +106,7 @@ func (uas *UsersAPIService) SignUp(c echo.Context) error {
 	err := uas.usersService.Register(username, password)
 
 	if err != nil {
-		return c.JSON(500, driving.Response[interface{}]{
+		return c.JSON(500, ports.Response[any]{
 			Status:  500,
 			Message: err.Error(),
 		})
@@ -116,7 +115,7 @@ func (uas *UsersAPIService) SignUp(c echo.Context) error {
 	user, err := uas.usersService.GetByUsername(username)
 
 	if err != nil {
-		return c.JSON(500, driving.Response[interface{}]{
+		return c.JSON(500, ports.Response[any]{
 			Status:  500,
 			Message: err.Error(),
 		})
@@ -125,13 +124,13 @@ func (uas *UsersAPIService) SignUp(c echo.Context) error {
 	token, err := uas.sessionService.Create(user.ID, user.Username, uas.secret)
 
 	if err != nil {
-		return c.JSON(500, driving.Response[interface{}]{
+		return c.JSON(500, ports.Response[any]{
 			Status:  500,
 			Message: err.Error(),
 		})
 	}
 
-	return c.JSON(200, driving.Response[SignInResponse]{
+	return c.JSON(200, ports.Response[SignInResponse]{
 		Status:  200,
 		Message: "User registered",
 		Data: SignInResponse{

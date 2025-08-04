@@ -1,5 +1,7 @@
 package templates
 
+import "os"
+
 type IndexVM struct {
 	Title string
 	Error error
@@ -10,7 +12,11 @@ templ Index(vm IndexVM) {
 		<head>
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
-			<link rel="stylesheet" href="/static/css/style.css"/>
+			if os.Getenv("ENV") == "development" {
+				<link rel="stylesheet" href="http://localhost:8080/css/style.css"/>
+			} else {
+				<link rel="stylesheet" href="/static/dist/hexagonal.css"/>
+			}
 			<link rel="icon" href="/static/favicon.svg" type="image/svg"/>
 			<title>{ vm.Title }</title>
 		</head>
@@ -22,9 +28,12 @@ templ Index(vm IndexVM) {
 			}
 			{ children... }
 			<!-- Scripts -->
-			<script defer src="/static/js/main.js"></script>
-			<script defer src="/static/js/htmx.js"></script>
-			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+			if os.Getenv("ENV") == "development" {
+				<script defer type="module" src="http://localhost:8080/src/main.js"></script>
+				<script defer type="module" src="http://localhost:8080/@vite/client"></script>
+			} else {
+				<script defer type="module" src="/static/dist/app.js"></script>
+			}
 		</body>
 	</html>
 }

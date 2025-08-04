@@ -49,6 +49,12 @@ templ Index(vm IndexVM) {
 						</div>
 						<!-- Navigation Links -->
 						<div class="flex items-center space-x-4">
+							<button
+								class="btn btn-lg btn-primary"
+								x-data="counter()"
+								@click="increment"
+								x-text="text"
+							>Click</button>
 							<a href="/login" class="text-blue-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Sign In</a>
 							<a href="/signup" class="bg-blue-500 text-white hover:bg-blue-600 px-4 py-2 rounded-md text-sm font-medium">Register</a>
 						</div>
