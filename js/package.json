@@ -1,0 +1,28 @@
+{
+  "name": "hexagonal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind:build": "tailwindcss -i ./css/style.css -o ../static/css/style.css",
+    "dev": "vite",
+    "build": "vite build --emptyOutDir"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/alpinejs": "^3.13.11",
+    "daisyui": "^5.0.50",
+    "globals": "^16.3.0",
+    "typescript-eslint": "^8.38.0",
+    "vite": "^7.0.6"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "alpinejs": "^3.14.9",
+    "htmx.org": "2.0.6",
+    "tailwindcss": "^4.1.11"
+  }
+}

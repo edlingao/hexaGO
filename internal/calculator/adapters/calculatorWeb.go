@@ -3,9 +3,9 @@ package adapters
 import (
 	"strconv"
 
+	"github.com/edlingao/hexago/common/delivery/web"
 	"github.com/edlingao/hexago/internal/calculator/core"
-	"github.com/edlingao/hexago/internal/calculator/ports/driven"
-	"github.com/edlingao/hexago/lib"
+	"github.com/edlingao/hexago/internal/calculator/ports"
 	"github.com/edlingao/hexago/web/views"
 	"github.com/labstack/echo/v4"
 )
@@ -13,15 +13,15 @@ import (
 type CalculatorWebpage struct {
 	URL         string
 	http        *echo.Group
-	calcService driven.CalculatorOperations
-	dbService   driven.StoringOperations[core.Calculation]
+	calcService ports.CalculatorOperations
+	dbService   ports.StoringOperations[core.Calculation]
 }
 
 func NewCalculatorWebpage(
 	url string,
 	httpService *echo.Group,
-	calcService driven.CalculatorOperations,
-	dbService driven.StoringOperations[core.Calculation],
+	calcService ports.CalculatorOperations,
+	dbService ports.StoringOperations[core.Calculation],
 ) *CalculatorWebpage {
 
 	calculatorWebPageService := &CalculatorWebpage{
@@ -41,7 +41,7 @@ func NewCalculatorWebpage(
 func (cw *CalculatorWebpage) Home(c echo.Context) error {
 	history := cw.dbService.GetAll("calculations")
 
-	return lib.Render(
+	return web.Render(
 		c,
 		views.Index(views.IndexVM{
 			Result:  views.IndexResult{},
@@ -57,7 +57,7 @@ func (cw *CalculatorWebpage) Calculate(c echo.Context) error {
 	operation, err := strconv.Atoi(c.FormValue("operation"))
 
 	if err != nil {
-		return lib.Render(
+		return web.Render(
 			c,
 			views.Index(views.IndexVM{
 				Error:   err,
@@ -70,7 +70,7 @@ func (cw *CalculatorWebpage) Calculate(c echo.Context) error {
 	c.Response().Header().Set("HX-Trigger", "calc:history")
 	result := cw.calcService.Calculate(num1, num2, operation)
 
-	return lib.Render(
+	return web.Render(
 		c,
 		views.Index(views.IndexVM{
 			Result: views.IndexResult{
@@ -85,7 +85,7 @@ func (cw *CalculatorWebpage) Calculate(c echo.Context) error {
 func (cw *CalculatorWebpage) History(c echo.Context) error {
 	history := cw.dbService.GetAll("calculations")
 
-	return lib.Render(
+	return web.Render(
 		c,
 		views.Index(views.IndexVM{
 			Result:  views.IndexResult{},

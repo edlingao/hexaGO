@@ -6,8 +6,10 @@ import (
 	auth "github.com/edlingao/go-auth/auth/core"
 	calculatorAdapter "github.com/edlingao/hexago/internal/calculator/adapters"
 	calculatorCore "github.com/edlingao/hexago/internal/calculator/core"
+	calculatorPorts "github.com/edlingao/hexago/internal/calculator/ports"
 	usersAdapter "github.com/edlingao/hexago/internal/users/adapters"
 	usersCore "github.com/edlingao/hexago/internal/users/core"
+	usersPorts "github.com/edlingao/hexago/internal/users/ports"
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
@@ -41,7 +43,7 @@ func New(
 
 func (c *Configurator) AddCalculatorAPI() *Configurator {
 	dbService := calculatorAdapter.NewCalculatorDB[calculatorCore.Calculation]()
-	calcService := calculatorCore.NewCalculator(dbService)
+	calcService := calculatorPorts.NewCalculator(dbService)
 	calculatorHttpService := c.v1.Group("/calculator")
 
 	calculationHandler := calculatorAdapter.NewCalculatorHandler(
@@ -58,7 +60,7 @@ func (c *Configurator) AddCalculatorAPI() *Configurator {
 
 func (c *Configurator) AddCalculatorWeb() *Configurator {
 	dbService := calculatorAdapter.NewCalculatorDB[calculatorCore.Calculation]()
-	calcService := calculatorCore.NewCalculator(dbService)
+	calcService := calculatorPorts.NewCalculator(dbService)
 	calculatorWebpageService := calculatorAdapter.NewCalculatorWebpage(
 		"/",
 		c.root,
@@ -74,7 +76,7 @@ func (c *Configurator) AddUserAPI() *Configurator {
 	dbService := usersAdapter.NewDB[usersCore.User]()
 	sessionDBService := usersAdapter.NewSessionStore[auth.Session]()
 
-	userService := usersCore.NewUserService(dbService)
+	userService := usersPorts.NewUserService(dbService)
 	usersHttpService := c.v1.Group("/users")
 	sessionService := auth.NewSessionService(
 		sessionDBService,
@@ -96,11 +98,11 @@ func (c *Configurator) AddUserAPI() *Configurator {
 func (c *Configurator) AddUserWeb() *Configurator {
 	dbService := usersAdapter.NewDB[usersCore.User]()
 	sessionDBService := usersAdapter.NewSessionStore[auth.Session]()
-	calculatorService := calculatorCore.NewCalculator(
+	calculatorService := calculatorPorts.NewCalculator(
 		calculatorAdapter.NewCalculatorDB[calculatorCore.Calculation](),
 	)
 
-	userService := usersCore.NewUserService(dbService)
+	userService := usersPorts.NewUserService(dbService)
 	usersHttpService := c.root
 	sessionService := auth.NewSessionService(
 		sessionDBService,

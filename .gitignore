@@ -1,15 +1,23 @@
 # JS crap
 node_modules/
 node_modules/*
+js/node_modules/
+js/node_modules/*
 
 db/main.db
 tmp/
 
 # Generated Go templ files
 web/**/*_templ.go
+templ/**/*_templ.go
 
 # Tailwind CSS
 static/css/style.css
 
 # Environment variables
 .env
+
+# Generated files
+static/dist/*
+static/dist/**/*
+static/dist

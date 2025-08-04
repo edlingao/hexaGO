@@ -1,4 +1,4 @@
-package driven
+package ports
 
 type StoringOperations[T any] interface {
 	Close()

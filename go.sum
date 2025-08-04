@@ -8,6 +8,8 @@ github.com/edlingao/go-auth v0.0.15 h1:GDAXoFq4GlVUQUG7OTOr2p0+yWSfot5vpHGw15d8A
 github.com/edlingao/go-auth v0.0.15/go.mod h1:u6TzXyLdZhqLpxf9FmQdQd2I8MHk4NnDwGEvYa1hPIs=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
 github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
+github.com/goforj/godump v1.5.0 h1:QALI7uJkpiwAW3Anko+vOFQzLlWvB7YviYCJpE1sFIE=
+github.com/goforj/godump v1.5.0/go.mod h1:lCaXaxNTozTNAMJTPY91/ntMqw3JF8FOL93jCNKpNW0=
 github.com/golang-jwt/jwt/v5 v5.2.1 h1:OuVbFODueb089Lh128TAcimifWaLhJwVflnrgM17wHk=
 github.com/golang-jwt/jwt/v5 v5.2.1/go.mod h1:pqrtFR0X4osieyHYxtmOUWsAWrfe1Q5UVIyoH402zdk=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
